@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mfumo wa Malipo ya Umeme</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fc;
+            color: #2d3748;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a3c6e;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .loading-overlay.hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255, 255, 255, 0.3);
+            border-top: 6px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-message {
+            font-size: 1.5rem;
+            color: #ffffff;
+            text-align: center;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+            animation: bounce 1.5s infinite;
+        }
+
+        .loading-message i {
+            margin-right: 10px;
+            color: #ffeb3b;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .loading-footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 1rem;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .loading-footer .powered-by {
+            animation: colorChange 3s infinite;
+        }
+
+        @keyframes colorChange {
+            0% { color: #ffeb3b; }
+            50% { color: #4a90e2; }
+            100% { color: #e53e3e; }
+        }
+
+        .moving-objects {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .moving-object {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-size: contain;
+            opacity: 0.5;
+            animation: moveObject linear infinite;
+        }
+
+        @keyframes moveObject {
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            background: #1a3c6e;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .header-image-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-size: cover;
+            background-position: center;
+            animation: headerImageSlide 30s ease-in-out infinite;
+        }
+
+        @keyframes headerImageSlide {
+            0% { background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e'); opacity: 1; }
+            20% { background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e'); opacity: 1; }
+            25% { background-image: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f'); opacity: 0; }
+            30% { background-image: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f'); opacity: 1; }
+            45% { background-image: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f'); opacity: 1; }
+            50% { background-image: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0'); opacity: 0; }
+            55% { background-image: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0'); opacity: 1; }
+            70% { background-image: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0'); opacity: 1; }
+            75% { background-image: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7'); opacity: 0; }
+            80% { background-image: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7'); opacity: 1; }
+            95% { background-image: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7'); opacity: 1; }
+            100% { background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e'); opacity: 0; }
+        }
+
+        .header-title {
+            text-align: center;
+            color: #ffffff;
+            z-index: 1;
+        }
+
+        .header-title h2 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+            margin-bottom: 5px;
+        }
+
+        .header-title p .powered-by {
+            animation: colorChange 3s infinite;
+        }
+
+        .hamburger-menu {
+            position: relative;
+            z-index: 1002;
+        }
+
+        .hamburger-icon {
+            font-size: 1.8rem;
+            color: #ffffff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .hamburger-icon:hover {
+            transform: rotate(90deg);
+        }
+
+        .menu-dropdown {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            width: 250px;
+            height: 100vh;
+            padding: 20px 0;
+            z-index: 2000;
+            transform: translateX(-100%);
+            animation: slideInFromLeft 0.3s ease forwards;
+        }
+
+        .menu-dropdown.active {
+            display: block;
+        }
+
+        @keyframes slideInFromLeft {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #4a90e2, #2b6cb0);
+            margin: 5px 10px;
+            border-radius: 6px;
+        }
+
+        .menu-item:hover {
+            background: linear-gradient(135deg, #2b6cb0, #4a90e2);
+            transform: translateX(5px);
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+            color: #ffeb3b;
+        }
+
+        .menu-item span {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .menu-back-btn {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #e53e3e;
+            margin: 10px;
+            border-radius: 6px;
+            justify-content: center;
+        }
+
+        .menu-back-btn:hover {
+            background: #c53030;
+            transform: translateY(-2px);
+        }
+
+        .menu-back-btn i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .fullscreen-dropdown {
+            display: none;
+            position: fixed;
+            top: 120px;
+            left: 0;
+            width: 100vw;
+            height: calc(100vh - 120px);
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            overflow-y: auto;
+            animation: slideDown 0.3s ease;
+        }
+
+        .fullscreen-dropdown.active {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .section-content {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .section-content h3 {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: #2b6cb0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-content h3 i {
+            margin-right: 10px;
+            color: #4a90e2;
+        }
+
+        .back-btn {
+            background: #e53e3e;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #c53030;
+            transform: translateY(-2px);
+        }
+
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-card h4 {
+            font-size: 1rem;
+            color: #718096;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .dashboard-card p {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #2b6cb0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: #ffffff;
+            color: #2d3748;
+            transition: all 0.3s ease;
+        }
+
+        textarea {
+            padding: 12px;
+            height: 100px;
+            resize: vertical;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #4a90e2;
+            background: #f7fafc;
+            outline: none;
+            box-shadow: 0 0 6px rgba(74, 144, 226, 0.2);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #a0aec0;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 12px;
+            top: 34px;
+            color: #4a90e2;
+            font-size: 1rem;
+        }
+
+        button[type="submit"] {
+            background: #4a90e2;
+            color: #ffffff;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background: #2b6cb0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
+        }
+
+        .admin-login-btn {
+            background: linear-gradient(135deg, #4a90e2, #2b6cb0);
+            color: #ffffff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .admin-login-btn:hover {
+            background: linear-gradient(135deg, #2b6cb0, #4a90e2);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            color: #2d3748;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #4a90e2;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        tr {
+            transition: background 0.3s ease;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        .days-normal {
+            color: #00cc00;
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(0, 204, 0, 0.5);
+            animation: glowGreen 1.5s infinite;
+        }
+
+        .days-warning {
+            color: #ecc94b;
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(236, 201, 75, 0.5);
+            animation: glowYellow 1.5s infinite;
+        }
+
+        .overdue-row {
+            background: rgba(255, 0, 0, 0.3);
+            color: #ffffff;
+            animation: redPulse 1.5s infinite;
+        }
+
+        .overdue {
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+        }
+
+        @keyframes glowGreen {
+            0% { text-shadow: 0 0 5px rgba(0, 204, 0, 0.5); }
+            50% { text-shadow: 0 0 10px rgba(0, 204, 0, 0.8); }
+            100% { text-shadow: 0 0 5px rgba(0, 204, 0, 0.5); }
+        }
+
+        @keyframes glowYellow {
+            0% { text-shadow: 0 0 5px rgba(236, 201, 75, 0.5); }
+            50% { text-shadow: 0 0 10px rgba(236, 201, 75, 0.8); }
+            100% { text-shadow: 0 0 5px rgba(236, 201, 75, 0.5); }
+        }
+
+        @keyframes redPulse {
+            0% { background: rgba(255, 0, 0, 0.3); }
+            50% { background: rgba(255, 0, 0, 0.5); }
+            100% { background: rgba(255, 0, 0, 0.3); }
+        }
+
+        .pay-btn {
+            background: #48bb78;
+            color: #ffffff;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .pay-btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .delete-btn {
+            background: #e53e3e;
+            color: #ffffff;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #c53030;
+            transform: translateY(-2px);
+        }
+
+        .sms-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #e6fffa;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .sms-message {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+            max-width: 70%;
+            background: linear-gradient(135deg, #ffffff, #f0f0f0);
+            border-radius: 15px;
+            padding: 12px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            animation: smsPop 0.5s ease;
+            transition: transform 0.3s ease;
+        }
+
+        .sms-message:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes smsPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .sms-message.sent {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #34C759, #2aa644);
+            color: #ffffff;
+        }
+
+        .sms-header {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #2b6cb0;
+            margin-bottom: 5px;
+        }
+
+        .sms-message.sent .sms-header {
+            color: #ffffff;
+        }
+
+        .sms-body {
+            font-size: 0.9rem;
+            color: #2d3748;
+        }
+
+        .sms-message.sent .sms-body {
+            color: #ffffff;
+        }
+
+        .sms-date {
+            font-size: 0.7rem;
+            color: #718096;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .sms-message.sent .sms-date {
+            color: #e0e0e0;
+        }
+
+        .payment-status {
+            margin-top: 20px;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .payment-status p {
+            font-size: 0.9rem;
+            margin: 8px 0;
+        }
+
+        .status-label {
+            font-weight: 500;
+            color: #2b6cb0;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-top: 120px;
+            padding: 30px;
+            background: #edf2f7;
+            z-index: 1;
+        }
+
+        .welcome-message {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .welcome-message h3 {
+            font-size: 1.6rem;
+            color: #2b6cb0;
+            margin-bottom: 10px;
+        }
+
+        .welcome-message p {
+            font-size: 1rem;
+            color: #718096;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            color: #718096;
+            background: #ffffff;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+            z-index: 1;
+        }
+
+        .powered-by {
+            font-weight: 500;
+            animation: colorChange 3s infinite;
+        }
+
+        .paid-unpaid-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .paid-unpaid-list {
+            flex: 1;
+            padding: 15px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .paid-unpaid-list h4 {
+            margin-bottom: 10px;
+            color: #2b6cb0;
+        }
+
+        .copy-btn {
+            background: #4a90e2;
+            color: #ffffff;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #2b6cb0;
+        }
+
+        .debt-table {
+            margin-top: 20px;
+        }
+
+        .announcement-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #ffffff, #f4f7fc);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .announcement {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #4a90e2, #2b6cb0);
+            color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            animation: announcementSlide 0.5s ease, glow 2s infinite;
+            transition: transform 0.3s ease;
+        }
+
+        .announcement:hover {
+            transform: scale(1.02);
+        }
+
+        @keyframes announcementSlide {
+            0% { transform: translateX(-100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); }
+            50% { box-shadow: 0 4px 12px rgba(74, 144, 226, 0.5); }
+            100% { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); }
+        }
+
+        .announcement i {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: #ffeb3b;
+            animation: iconPulse 1.5s infinite;
+        }
+
+        @keyframes iconPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .announcement-text {
+            flex: 1;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .announcement-actions button {
+            background: #ffffff;
+            color: #4a90e2;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .announcement-actions button:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-message">
+            <i class="fa-solid fa-bolt-lightning"></i> Karibu kwenye Mfumo wa Kuchangisha Hela ya Umeme, hapa Kwa Abeli
+        </div>
+        <div class="loading-footer">Powered by <span class="powered-by">MALOSHA</span></div>
+        <div class="moving-objects" id="movingObjectsContainer"></div>
+    </div>
+
+    <div class="header">
+        <div class="hamburger-menu">
+            <i class="fa-solid fa-bars hamburger-icon" onclick="toggleMenu()"></i>
+        </div>
+        <div class="header-title">
+            <h2><i class="fa-solid fa-bolt-lightning"></i> DAVID ELECTRICITY LUKU COLLECTION</h2>
+            <p>Powered by <span class="powered-by">D4V1D MALOSHA</span> @2025</p>
+        </div>
+        <div class="header-image-slider"></div>
+    </div>
+
+    <div id="menuDropdown" class="menu-dropdown">
+        <div class="menu-item" onclick="toggleFullscreenDropdown('dashboardDropdown')">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Dashboard</span>
+        </div>
+        <div class="menu-item" onclick="toggleFullscreenDropdown('tenantDropdown')">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Sajili Mpangaji</span>
+        </div>
+        <div class="menu-item" onclick="toggleFullscreenDropdown('paymentDropdown')">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Fanya malipo yote hapa</span>
+        </div>
+        <div class="menu-item" onclick="toggleFullscreenDropdown('historyDropdown')">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Historia ya Malipo</span>
+        </div>
+        <div class="menu-item" onclick="toggleFullscreenDropdown('smsDropdown')">
+            <i class="fa-solid fa-comment-sms"></i>
+            <span>SMS ZA MIAMALA</span>
+        </div>
+        <div class="menu-item" onclick="toggleFullscreenDropdown('statusDropdown')">
+            <i class="fa-solid fa-user-check"></i>
+            <span>Hali ya Malipo</span>
+        </div>
+        <div class="menu-item" onclick="toggleFullscreenDropdown('adminDropdown')">
+            <i class="fa-solid fa-user-shield"></i>
+            <span>kwa matumizi ya david pekee</span>
+        </div>
+        <div class="menu-item" onclick="toggleFullscreenDropdown('paidUnpaidDropdown')">
+            <i class="fa-solid fa-money-check-dollar"></i>
+            <span>Waliotoa/Bado</span>
+        </div>
+        <div class="menu-item" onclick="toggleFullscreenDropdown('debtDropdown')">
+            <i class="fa-solid fa-exclamation-circle"></i>
+            <span>MADENI                           </span>
+        </div>
+        <div class="menu-item" onclick="toggleFullscreenDropdown('cutOffListDropdown')">
+            <i class="fa-solid fa-plug-circle-xmark"></i>
+            <span>WALIO KARIBU KUKATIWA UMEME </span>
+        </div>
+        <div class="menu-item" onclick="toggleFullscreenDropdown('tenantsListDropdown')">
+            <i class="fa-solid fa-users-line"></i>
+            <span>MAJINA YA WAPANGAJI WOTE  </span>
+        </div>
+        <div class="menu-back-btn" onclick="goToHome()">
+            <i class="fa-solid fa-home"></i> Rudi Home
+        </div>
+    </div>
+
+    <div id="dashboardDropdown" class="fullscreen-dropdown">
+        <div class="section-content">
+            <button class="back-btn" onclick="goBackToMenu()"><i class="fa-solid fa-arrow-left"></i> Rudi Menyu</button>
+            <h3><i class="fa-solid fa-chart-pie"></i> Dashboard</h3>
+            <div class="dashboard-content">
+                <div class="dashboard-card">
+                    <h4>Wapangaji Wote</h4>
+                    <p id="totalTenants">0</p>
+                </div>
+                <div class="dashboard-card">
+                    <h4>Malipo Yote</h4>
+                    <p id="totalPayments">0 TZS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tenantDropdown" class="fullscreen-dropdown">
+        <div class="section-content">
+            <button class="back-btn" onclick="goBackToMenu()"><i class="fa-solid fa-arrow-left"></i> Rudi Menyu</button>
+            <h3><i class="fa-solid fa-user-plus"></i> Sajili Mpangaji</h3>
+            <form id="tenantForm">
+                <div class="form-group">
+                    <label>Jina la Mpangaji</label>
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="tenantNameInput" placeholder="Ingiza jina la mpangaji" required>
+                </div>
+                <div class="form-group">
+                    <label>Nambari ya Chumba</label>
+                    <i class="fa-solid fa-house"></i>
+                    <input type="text" id="roomNumber" placeholder="Ingiza namba ya chumba" required>
+                </div>
+                <div class="form-group">
+                    <label>Nambari ya Simu (Si Lazima)</label>
+                    <i class="fa-solid fa-phone"></i>
+                    <input type="tel" id="phoneNumber" placeholder="Ingiza namba ya simu">
+                </div>
+                <button type="submit"><i class="fa-solid fa-save"></i> Sajili</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="paymentDropdown" class="fullscreen-dropdown">
+        <div class="section-content">
+            <button class="back-btn" onclick="goBackToMenu()"><i class="fa-solid fa-arrow-left"></i> Rudi Menyu</button>
+            <h3><i class="fa-solid fa-wallet"></i> Rekodi Malipo</h3>
+            <form id="paymentForm">
+                <div class="form-group">
+                    <label>Jina la Mpangaji</label>
+                    <i class="fa-solid fa-user"></i>
+                    <select id="tenantName" required>
+                        <option value="">--Chagua Mpangaji--</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Kiasi (TZS)</label>
+                    <i class="fa-solid fa-money-bill"></i>
+                    <input type="number" id="amount" placeholder="Ingiza kiasi cha malipo" required>
+                </div>
+                <div class="form-group">
+                    <label>Tarehe</label>
+                    <i class="fa-solid fa-calendar-day"></i>
+                    <input type="date" id="date" required>
+                </div>
+                <button type="submit"><i class="fa-solid fa-save"></i> Hifadhi</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="historyDropdown" class="fullscreen-dropdown">
+        <div class="section-content">
+            <button class="back-btn" onclick="goBackToMenu()"><i class="fa-solid fa-arrow-left"></i> Rudi Menyu</button>
+            <h3><i class="fa-solid fa-clock-rotate-left"></i> Historia ya Malipo</h3>
+            <table id="paymentTable">
+                <thead>
+                    <tr>
+                        <th>Jina</th>
+                        <th>Kiasi</th>
+                        <th>Tarehe ya Kulipa</th>
+                        <th>Tarehe ya Mwisho</th>
+                        <th>Siku Zilizobaki</th>
+                    </tr>
+                </thead>
+                <tbody id="paymentList"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="smsDropdown" class="fullscreen-dropdown">
+        <div class="section-content">
+            <button class="back-btn" onclick="goBackToMenu()"><i class="fa-solid fa-arrow-left"></i> Rudi Menyu</button>
+            <h3><i class="fa-solid fa-comment-sms"></i> Rekodi SMS za Miamala</h3>
+            <form id="smsForm">
+                <div class="form-group">
+                    <label>Jina la Aliyetuma</label>
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="smsSender" placeholder="Ingiza jina la aliyetuma SMS" required>
+                </div>
+                <div class="form-group">
+                    <label>Ujumbe wa SMS</label>
+                    <i class="fa-solid fa-comment"></i>
+                    <textarea id="smsMessage" placeholder="Ingiza ujumbe wa SMS" required></textarea>
+                </div>
+                <button type="submit"><i class="fa-solid fa-save"></i> Hifadhi SMS</button>
+            </form>
+            <div class="sms-list" id="smsList"></div>
+        </div>
+    </div>
+
+    <div id="statusDropdown" class="fullscreen-dropdown">
+        <div class="section-content">
+            <button class="back-btn" onclick="goBackToMenu()"><i class="fa-solid fa-arrow-left"></i> Rudi Menyu</button>
+            <h3><i class="fa-solid fa-user-check"></i> Hali ya Malipo ya Mwanachama</h3>
+            <div class="form-group">
+                <label>Chagua Mpangaji</label>
+                <i class="fa-solid fa-user"></i>
+                <select id="tenantSelect" onchange="displayPaymentStatus()">
+                    <option value="">--Chagua Mpangaji--</option>
+                </select>
+            </div>
+            <div id="paymentStatus" class="payment-status"></div>
+        </div>
+    </div>
+
+    <div id="adminDropdown" class="fullscreen-dropdown">
+        <div class="section-content">
+            <button class="back-btn" onclick="goBackToMenu()"><i class="fa-solid fa-arrow-left"></i> Rudi Menyu</button>
+            <h3><i class="fa-solid fa-user-shield"></i> Admin - Udhibiti</h3>
+            <div class="form-group">
+                <label>Ingiza Password</label>
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="adminPassword" placeholder="Ingiza password" required>
+            </div>
+            <button class="admin-login-btn" onclick="authenticateAdmin()"><i class="fa-solid fa-sign-in-alt"></i> Ingia</button>
+            <div id="adminPanel" style="display: none;">
+                <h4>Malipo Yanayosubiri Kuthibitishwa</h4>
+                <table id="adminPaymentTable">
+                    <thead>
+                        <tr>
+                            <th>Jina</th>
+                            <th>Kiasi</th>
+                            <th>Tarehe</th>
+                            <th>Thibitisha</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminPaymentList"></tbody>
+                </table>
+                <h4>Udhibiti wa Wapangaji</h4>
+                <table id="tenantManagementTable">
+                    <thead>
+                        <tr>
+                            <th>Jina</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tenantManagementList"></tbody>
+                </table>
+                <h4>Settings za Mfumo</h4>
+                <div class="form-group">
+                    <label>Chagua Moduli</label>
+                    <i class="fa-solid fa-cog"></i>
+                    <select id="systemMode" onchange="updateSystemMode()">
+                        <option value="admin">Admin (Full Access)</option>
+                        <option value="viewer">Viewer (Read-Only)</option>
+                    </select>
+                </div>
+                <h4>Tangazo</h4>
+                <form id="announcementForm">
+                    <div class="form-group">
+                        <label>Tangazo</label>
+                        <i class="fa-solid fa-bullhorn"></i>
+                        <textarea id="announcementMessage" placeholder="Ingiza tangazo" required></textarea>
+                    </div>
+                    <button type="submit"><i class="fa-solid fa-save"></i> Chapisha Tangazo</button>
+                </form>
+                <div class="announcement-container" id="announcementList"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="paidUnpaidDropdown" class="fullscreen-dropdown">
+        <div class="section-content">
+            <button class="back-btn" onclick="goBackToMenu()"><i class="fa-solid fa-arrow-left"></i> Rudi Menyu</button>
+            <h3><i class="fa-solid fa-money-check-dollar"></i> Waliotoa na Wale Ambao Bado</h3>
+            <div class="paid-unpaid-container">
+                <div class="paid-unpaid-list">
+                    <h4>Waliotoa Hela ya Umeme</h4>
+                    <ul id="paidList"></ul>
+                </div>
+                <div class="paid-unpaid-list">
+                    <h4>Wale Ambao Bado</h4>
+                    <ul id="unpaidList"></ul>
+                </div>
+            </div>
+            <button class="copy-btn" onclick="copyCombinedList()">Copy Majina na Ujumbe</button>
+            <div class="payment-message" id="paymentMessage"></div>
+        </div>
+    </div>
+
+    <div id="debtDropdown" class="fullscreen-dropdown">
+        <div class="section-content">
+            <button class="back-btn" onclick="goBackToMenu()"><i class="fa-solid fa-arrow-left"></i> Rudi Menyu</button>
+            <h3><i class="fa-solid fa-exclamation-circle"></i> MADENI                       </h3>
+            <table class="debt-table">
+                <thead>
+                    <tr>
+                        <th>Jina</th>
+                        <th>Deni (TZS)</th>
+                        <th>Siku Zilizopita</th>
+                    </tr>
+                </thead>
+                <tbody id="debtList"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="cutOffListDropdown" class="fullscreen-dropdown">
+        <div class="section-content">
+            <button class="back-btn" onclick="goBackToMenu()"><i class="fa-solid fa-arrow-left"></i> Rudi Menyu</button>
+            <h3><i class="fa-solid fa-plug-circle-xmark"></i> Wapangaji WALIO KARIBU KUKATIWA UMEME </h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Jina</th>
+                        <th>Deni (TZS)</th>
+                        <th>Siku Zilizopita</th>
+                    </tr>
+                </thead>
+                <tbody id="cutOffList"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tenantsListDropdown" class="fullscreen-dropdown">
+        <div class="section-content">
+            <button class="back-btn" onclick="goBackToMenu()"><i class="fa-solid fa-arrow-left"></i> Rudi Menyu</button>
+            <h3><i class="fa-solid fa-users-line"></i> MAJINA YA WAPANGAJI WOTE </h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Jina</th>
+                        <th>Nambari ya Chumba</th>
+                        <th>Nambari ya Simu</th>
+                    </tr>
+                </thead>
+                <tbody id="tenantsList"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="welcome-message">
+            <h3>Karibu kwenye Mfumo wa Malipo ya Umeme</h3>
+            <p>Maelekezo kwa Mtumiaji: Ili kufungua vipengele vingine vya ziada, tafadhali gusa alama ya mistari mitatu ya mlalo (=) iliyopo kwenye kona ya juu kushoto ya skrini.
+Kupitia menyu hii, utaweza kuona majina ya wapangaji, malipo, na ujumbe wa miamala (SMS), mfumo  huu umetenezwa na David malosha kusaidia kukusanya hela ya umeme  kila week</p>
+            <div class="announcement-container" id="mainAnnouncementList"></div>
+            <h3><i class="fa-solid fa-clock-rotate-left"></i> Historia ya Malipo</h3>
+            <table id="homePaymentTable">
+                <thead>
+                    <tr>
+                        <th>Jina</th>
+                        <th>Kiasi</th>
+                        <th>Tarehe ya Kulipa</th>
+                        <th>Tarehe ya Mwisho</th>
+                        <th>Siku Zilizobaki</th>
+                    </tr>
+                </thead>
+                <tbody id="homePaymentList"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="footer">
+        Powered by <span class="powered-by">D4V1D MALOSHA</span> © 2025
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getDatabase, ref, push, set, onValue, remove, get, update } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC0WIVf2sLK3--aeONEwa0o5V3O4uy8lns",
+            authDomain: "mchango-wa-umeme-3bbe5.firebaseapp.com",
+            databaseURL: "https://mchango-wa-umeme-3bbe5-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "mchango-wa-umeme-3bbe5",
+            storageBucket: "mchango-wa-umeme-3bbe5.firebasestorage.app",
+            messagingSenderId: "504600955699",
+            appId: "1:504600955699:web:0d4b83061d56e15b694c46",
+            measurementId: "G-E3Q8Z2SE9R"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const paymentsRef = ref(database, 'payments');
+        const tenantsRef = ref(database, 'tenants');
+        const smsRef = ref(database, 'sms');
+        const debtsRef = ref(database, 'debts');
+        const cutOffRef = ref(database, 'cutOffList');
+        const announcementsRef = ref(database, 'announcements');
+        const settingsRef = ref(database, 'settings');
+
+        let editIndex = null;
+        let isAdminAuthenticated = false;
+        let systemMode = 'admin';
+        let nameColors = {};
+
+        window.onload = function() {
+            createMovingObjects();
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').classList.add('hidden');
+                initializeAppFunctions();
+                loadSystemMode();
+            }, 4000);
+        };
+
+        function initializeAppFunctions() {
+            displayPayments();
+            displayHomePayments();
+            displaySMS();
+            updateDashboard();
+            populateTenantDropdown();
+            displayAnnouncements();
+            calculateDebts();
+            displayCutOffList();
+            displayTenantsList();
+        }
+
+        function loadSystemMode() {
+            get(settingsRef).then((snapshot) => {
+                const settings = snapshot.val();
+                if (settings && settings.mode) {
+                    systemMode = settings.mode;
+                    document.getElementById('systemMode').value = systemMode;
+                }
+            });
+        }
+
+        window.toggleMenu = function() {
+            const menu = document.getElementById('menuDropdown');
+            menu.classList.toggle('active');
+        };
+
+        window.toggleFullscreenDropdown = function(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            const isActive = dropdown.classList.contains('active');
+
+            if (!isActive) {
+                document.querySelectorAll('.fullscreen-dropdown').forEach(content => {
+                    content.classList.remove('active');
+                });
+                dropdown.classList.add('active');
+                document.getElementById('menuDropdown').classList.remove('active');
+
+                if (dropdownId === 'dashboardDropdown') {
+                    updateDashboard();
+                } else if (dropdownId === 'statusDropdown') {
+                    populateTenantDropdown();
+                } else if (dropdownId === 'paymentDropdown') {
+                    populateTenantDropdownForPayment();
+                } else if (dropdownId === 'adminDropdown') {
+                    displayAdminPayments();
+                    displayTenantManagement();
+                } else if (dropdownId === 'paidUnpaidDropdown') {
+                    displayPaidUnpaid();
+                } else if (dropdownId === 'debtDropdown') {
+                    calculateDebts();
+                } else if (dropdownId === 'cutOffListDropdown') {
+                    displayCutOffList();
+                } else if (dropdownId === 'tenantsListDropdown') {
+                    displayTenantsList();
+                }
+            }
+        };
+
+        window.goBackToMenu = function() {
+            document.querySelectorAll('.fullscreen-dropdown').forEach(content => {
+                content.classList.remove('active');
+            });
+            toggleMenu();
+        };
+
+        window.goToHome = function() {
+            document.querySelectorAll('.fullscreen-dropdown').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById('menuDropdown').classList.remove('active');
+        };
+
+        document.getElementById('tenantForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (systemMode === 'viewer' && !isAdminAuthenticated) {
+                alert('DAVID MALOSHA amezuia kila mtu kuhariri !');
+                return;
+            }
+
+            const tenantName = document.getElementById('tenantNameInput').value.trim();
+            const roomNumber = document.getElementById('roomNumber').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+
+            get(tenantsRef).then((snapshot) => {
+                const tenants = snapshot.val();
+                let isDuplicate = false;
+
+                if (tenants) {
+                    Object.values(tenants).forEach(tenant => {
+                        if (tenant.name.toLowerCase() === tenantName.toLowerCase()) {
+                            isDuplicate = true;
+                        }
+                    });
+                }
+
+                if (isDuplicate) {
+                    alert('Mpangaji huyu tayari amesajiliwa! Tafadhali tumia jina lingine.');
+                    return;
+                }
+
+                const tenant = {
+                    name: tenantName,
+                    roomNumber: roomNumber,
+                    phoneNumber: phoneNumber || ''
+                };
+
+                push(tenantsRef, tenant)
+                    .then(() => {
+                        alert('Mpangaji amesajiliwa!');
+                        this.reset();
+                    })
+                    .catch(error => {
+                        console.error('Error saving tenant:', error);
+                    });
+            });
+        });
+
+        function populateTenantDropdownForPayment() {
+            const tenantSelect = document.getElementById('tenantName');
+            tenantSelect.innerHTML = '<option value="">--Chagua Mpangaji--</option>';
+
+            onValue(tenantsRef, (snapshot) => {
+                const tenants = snapshot.val();
+                if (!tenants) return;
+
+                Object.keys(tenants).forEach((key) => {
+                    const tenant = tenants[key];
+                    const option = document.createElement('option');
+                    option.value = tenant.name;
+                    option.textContent = tenant.name;
+                    tenantSelect.appendChild(option);
+                });
+            });
+        }
+
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (systemMode === 'viewer' && !isAdminAuthenticated) {
+                alert('DAVID MALOSHA PEKEE NDIYE ANA UWEZO WA KUFANYA MALIPO!');
+                return;
+            }
+
+            const tenantName = document.getElementById('tenantName').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const date = document.getElementById('date').value;
+
+            get(ref(database, `debts/${tenantName}`)).then((snapshot) => {
+                const debtData = snapshot.val();
+                let debt = debtData ? debtData.amount : 0;
+                let remainingAmount = amount;
+
+                if (debt > 0) {
+                    if (remainingAmount >= debt) {
+                        remainingAmount -= debt;
+                        set(ref(database, `debts/${tenantName}`), {
+                            amount: 0,
+                            daysOverdue: 0,
+                            lastUpdate: date
+                        });
+                        remove(ref(database, `cutOffList/${tenantName}`));
+                        const sms = {
+                            sender: "MALOSHA PAY",
+                            message: `Deni lako la ${debt.toLocaleString()} TZS limelipwa. Asante kwa malipo!`,
+                            date: new Date().toISOString().split('T')[0],
+                            month: new Date().toLocaleString('default', { month: 'long' })
+                        };
+                        push(smsRef, sms);
+                    } else {
+                        debt -= remainingAmount;
+                        set(ref(database, `debts/${tenantName}`), {
+                            amount: debt,
+                            daysOverdue: debtData.daysOverdue,
+                            lastUpdate: date
+                        });
+                        remainingAmount = 0;
+                        const sms = {
+                            sender: "MALOSHA PAY",
+                            message: `Umelipa ${amount.toLocaleString()} TZS. Deni lako sasa ni ${debt.toLocaleString()} TZS.`,
+                            date: new Date().toISOString().split('T')[0],
+                            month: new Date().toLocaleString('default', { month: 'long' })
+                        };
+                        push(smsRef, sms);
+                    }
+                }
+
+                if (remainingAmount > 0) {
+                    const daysDue = remainingAmount === 1000 ? 7 : remainingAmount === 2000 ? 14 : 30;
+                    const dueDate = new Date(date);
+                    dueDate.setDate(dueDate.getDate() + daysDue);
+
+                    const payment = {
+                        name: tenantName,
+                        amount: remainingAmount,
+                        date: date,
+                        dueDate: dueDate.toISOString().split('T')[0],
+                        confirmed: false,
+                        daysDue: daysDue
+                    };
+
+                    push(paymentsRef, payment);
+                }
+
+                this.reset();
+                alert('Malipo yamehifadhiwa!');
+                toggleFullscreenDropdown('paymentDropdown');
+            });
+        });
+
+        document.getElementById('smsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (systemMode === 'viewer' && !isAdminAuthenticated) {
+                alert('DAVID MALOSHA amezuia kipengele hiki kuhaririwa na kila mtu!');
+                return;
+            }
+
+            const sender = document.getElementById('smsSender').value;
+            const message = document.getElementById('smsMessage').value;
+            const date = new Date();
+            const formattedDate = date.toISOString().split('T')[0];
+            const month = date.toLocaleString('default', { month: 'long' });
+
+            const sms = {
+                sender: sender,
+                message: message,
+                date: formattedDate,
+                month: month
+            };
+
+            push(smsRef, sms)
+                .then(() => {
+                    this.reset();
+                    alert('SMS imehifadhiwa!');
+                })
+                .catch(error => {
+                    console.error('Error saving SMS:', error);
+                });
+        });
+
+        function displaySMS() {
+            const smsList = document.getElementById('smsList');
+            smsList.innerHTML = '';
+
+            onValue(smsRef, (snapshot) => {
+                smsList.innerHTML = '';
+                const smsData = snapshot.val();
+                if (!smsData) return;
+
+                Object.keys(smsData).forEach((key) => {
+                    const sms = smsData[key];
+                    const smsDiv = document.createElement('div');
+                    smsDiv.classList.add('sms-message', 'sent');
+                    smsDiv.innerHTML = `
+                        <div class="sms-header">${sms.sender}</div>
+                        <div class="sms-body">${sms.message}</div>
+                        <div class="sms-date">${sms.date} - ${sms.month}</div>
+                    `;
+                    smsList.appendChild(smsDiv);
+                });
+            });
+        }
+
+        function calculateDaysRemaining(dueDate, confirmed) {
+            if (!confirmed) return "Pending Confirmation";
+            const today = new Date();
+            const due = new Date(dueDate);
+            const diffTime = due - today;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        function generateRandomColor() {
+            const colors = ['#e6fffa', '#fefcbf', '#e6e6fa', '#d4edda', '#f3e7e9', '#d1ecf1', '#f5f5f5', '#ffe5b4', '#e0f7fa', '#f0fff4'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function getNameColor(name) {
+            if (!nameColors[name]) {
+                nameColors[name] = generateRandomColor();
+            }
+            return nameColors[name];
+        }
+
+        function displayPayments() {
+            const paymentList = document.getElementById('paymentList');
+            paymentList.innerHTML = '';
+
+            onValue(paymentsRef, (snapshot) => {
+                paymentList.innerHTML = '';
+                const payments = snapshot.val();
+                if (!payments) return;
+
+                Object.keys(payments).forEach((key) => {
+                    const payment = payments[key];
+                    const daysRemaining = calculateDaysRemaining(payment.dueDate, payment.confirmed);
+                    const row = document.createElement('tr');
+
+                    let statusClass = '';
+                    let statusText = '';
+
+                    if (daysRemaining === "Pending Confirmation") {
+                        statusText = "Pending Confirmation";
+                    } else if (daysRemaining > 2) {
+                        statusClass = 'days-normal';
+                        statusText = `${daysRemaining} Siku`;
+                    } else if (daysRemaining > 0) {
+                        statusClass = 'days-warning';
+                        statusText = `${daysRemaining} Siku`;
+                    } else {
+                        row.classList.add('overdue-row');
+                        const today = new Date();
+                        const due = new Date(payment.dueDate);
+                        const daysOverdue = Math.ceil((today - due) / (1000 * 60 * 60 * 24));
+                        statusText = `<span class="overdue">Anadaiwa (${daysOverdue} Siku)</span>`;
+                    }
+
+                    row.style.backgroundColor = daysRemaining <= 0 ? 'rgba(255, 0, 0, 0.3)' : getNameColor(payment.name);
+                    row.innerHTML = `
+                        <td>${payment.name}</td>
+                        <td>${payment.amount.toLocaleString()} TZS</td>
+                        <td>${payment.date}</td>
+                        <td>${payment.dueDate}</td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
+                    `;
+                    paymentList.appendChild(row);
+                });
+            });
+        }
+
+        function displayHomePayments() {
+            const homePaymentList = document.getElementById('homePaymentList');
+            homePaymentList.innerHTML = '';
+
+            onValue(paymentsRef, (snapshot) => {
+                homePaymentList.innerHTML = '';
+                const payments = snapshot.val();
+                if (!payments) return;
+
+                Object.keys(payments).forEach((key) => {
+                    const payment = payments[key];
+                    const daysRemaining = calculateDaysRemaining(payment.dueDate, payment.confirmed);
+                    const row = document.createElement('tr');
+
+                    let statusClass = '';
+                    let statusText = '';
+
+                    if (daysRemaining === "Pending Confirmation") {
+                        statusText = "Pending Confirmation";
+                    } else if (daysRemaining > 2) {
+                        statusClass = 'days-normal';
+                        statusText = `${daysRemaining} Siku`;
+                    } else if (daysRemaining > 0) {
+                        statusClass = 'days-warning';
+                        statusText = `${daysRemaining} Siku`;
+                    } else {
+                        row.classList.add('overdue-row');
+                        const today = new Date();
+                        const due = new Date(payment.dueDate);
+                        const daysOverdue = Math.ceil((today - due) / (1000 * 60 * 60 * 24));
+                        statusText = `<span class="overdue">Anadaiwa (${daysOverdue} Siku)</span>`;
+                    }
+
+                    row.style.backgroundColor = daysRemaining <= 0 ? 'rgba(255, 0, 0, 0.3)' : getNameColor(payment.name);
+                    row.innerHTML = `
+                        <td>${payment.name}</td>
+                        <td>${payment.amount.toLocaleString()} TZS</td>
+                        <td>${payment.date}</td>
+                        <td>${payment.dueDate}</td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
+                    `;
+                    homePaymentList.appendChild(row);
+                });
+            });
+        }
+
+        window.preparePayment = function(key) {
+            if (systemMode === 'viewer' && !isAdminAuthenticated) {
+                alert('DAVID amezuia kila mtu kufanya malipo !');
+                return;
+            }
+
+            get(ref(database, `payments/${key}`)).then((snapshot) => {
+                const payment = snapshot.val();
+                document.getElementById('tenantName').value = payment.name;
+                document.getElementById('amount').value = '';
+                document.getElementById('date').value = new Date().toISOString().split('T')[0];
+                document.querySelector('#paymentForm button[type="submit"]').innerHTML = '<i class="fa-solid fa-save"></i> Sasusha';
+                editIndex = key;
+                toggleFullscreenDropdown('paymentDropdown');
+            }).catch((error) => {
+                console.error("Error fetching payment:", error);
+            });
+        };
+
+        function updateDashboard() {
+            onValue(tenantsRef, (snapshot) => {
+                const tenants = snapshot.val();
+                const totalTenants = tenants ? Object.keys(tenants).length : 0;
+                document.getElementById('totalTenants').textContent = totalTenants;
+            });
+
+            onValue(paymentsRef, (snapshot) => {
+                const payments = snapshot.val();
+                let totalAmount = 0;
+                if (payments) {
+                    Object.values(payments).forEach(payment => {
+                        if (payment.confirmed) {
+                            totalAmount += payment.amount;
+                        }
+                    });
+                }
+                document.getElementById('totalPayments').textContent = totalAmount.toLocaleString() + ' TZS';
+            });
+        }
+
+        function populateTenantDropdown() {
+            const tenantSelect = document.getElementById('tenantSelect');
+            tenantSelect.innerHTML = '<option value="">--Chagua Mpangaji--</option>';
+
+            onValue(tenantsRef, (snapshot) => {
+                const tenants = snapshot.val();
+                if (!tenants) return;
+
+                Object.keys(tenants).forEach((key) => {
+                    const tenant = tenants[key];
+                    const option = document.createElement('option');
+                    option.value = tenant.name;
+                    option.textContent = tenant.name;
+                    tenantSelect.appendChild(option);
+                });
+            });
+        }
+
+        window.displayPaymentStatus = function() {
+            const tenantName = document.getElementById('tenantSelect').value;
+            const paymentStatusDiv = document.getElementById('paymentStatus');
+            paymentStatusDiv.innerHTML = '';
+
+            if (!tenantName) {
+                paymentStatusDiv.innerHTML = '<p>Chagua mpangaji kwanza!</p>';
+                return;
+            }
+
+            onValue(paymentsRef, (snapshot) => {
+                const payments = snapshot.val();
+                if (!payments) {
+                    paymentStatusDiv.innerHTML = '<p>Hakuna malipo yaliyorekodiwa kwa mpangaji huyu!</p>';
+                    return;
+                }
+
+                const tenantPayments = Object.values(payments).filter(payment => payment.name.toLowerCase() === tenantName.toLowerCase());
+                if (tenantPayments.length === 0) {
+                    paymentStatusDiv.innerHTML = '<p>Hakuna malipo yaliyorekodiwa kwa mpangaji huyu!</p>';
+                    return;
+                }
+
+                let totalPaid = 0;
+                let lastDueDate = null;
+                let daysOverdue = 0;
+                let debt = 0;
+
+                let paymentHistory = '<h4>Malipo Yaliyofanywa</h4>';
+                paymentHistory += `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kiasi (TZS)</th>
+                                <th>Tarehe ya Kulipa</th>
+                                <th>Tarehe ya Mwisho</th>
+                                <th>Mwezi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                tenantPayments.forEach(payment => {
+                    if (payment.confirmed) {
+                        totalPaid += payment.amount;
+                        const paymentDate = new Date(payment.date);
+                        const month = paymentDate.toLocaleString('default', { month: 'long' });
+                        paymentHistory += `
+                            <tr>
+                                <td>${payment.amount.toLocaleString()}</td>
+                                <td>${payment.date}</td>
+                                <td>${payment.dueDate}</td>
+                                <td>${month}</td>
+                            </tr>
+                        `;
+
+                        const dueDate = new Date(payment.dueDate);
+                        if (!lastDueDate || dueDate > lastDueDate) {
+                            lastDueDate = dueDate;
+                        }
+                    }
+                });
+
+                paymentHistory += '</tbody></table>';
+
+                const today = new Date();
+                if (lastDueDate && lastDueDate < today) {
+                    const diffTime = today - lastDueDate;
+                    daysOverdue = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    debt = Math.ceil(daysOverdue / 7) * 1000;
+                }
+
+                get(ref(database, `debts/${tenantName}`)).then((snapshot) => {
+                    const existingDebt = snapshot.val();
+                    if (existingDebt) {
+                        debt = existingDebt.amount;
+                        daysOverdue = existingDebt.daysOverdue;
+                    }
+
+                    paymentStatusDiv.innerHTML = `
+                        ${paymentHistory}
+                        <p><span class="status-label">Siku Zilizopita Hajalipa:</span> ${daysOverdue > 0 ? daysOverdue + ' Siku' : 'Hakuna'}</p>
+                        <p><span class="status-label">Deni:</span> ${debt > 0 ? debt.toLocaleString() + ' TZS' : 'Hakuna'}</p>
+                        <p><span class="status-label">Siku za Deni:</span> ${daysOverdue > 0 ? daysOverdue + ' Siku' : 'Hakuna'}</p>
+                    `;
+                });
+            });
+        };
+
+        window.authenticateAdmin = function() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === '1340') {
+                isAdminAuthenticated = true;
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('adminPassword').value = '';
+                displayAdminPayments();
+                displayTenantManagement();
+                loadSystemMode();
+            } else {
+                alert('Password si sahihi!');
+            }
+        };
+
+        function displayAdminPayments() {
+            const adminPaymentList = document.getElementById('adminPaymentList');
+            adminPaymentList.innerHTML = '';
+
+            onValue(paymentsRef, (snapshot) => {
+                adminPaymentList.innerHTML = '';
+                const payments = snapshot.val();
+                if (!payments) return;
+
+                Object.keys(payments).forEach((key) => {
+                    const payment = payments[key];
+                    if (!payment.confirmed) {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${payment.name}</td>
+                            <td>${payment.amount.toLocaleString()} TZS</td>
+                            <td>${payment.date}</td>
+                            <td>
+                                <button class="pay-btn" onclick="confirmPayment('${key}')"><i class="fa-solid fa-check"></i> Thibitisha</button>
+                            </td>
+                        `;
+                        adminPaymentList.appendChild(row);
+                    }
+                });
+            });
+        }
+
+        window.confirmPayment = function(key) {
+            update(ref(database, `payments/${key}`), { confirmed: true })
+                .then(() => {
+                    alert('Malipo yamethibitishwa!');
+                    displayAdminPayments();
+                })
+                .catch(error => {
+                    console.error('Error confirming payment:', error);
+                });
+        };
+
+        function displayTenantManagement() {
+            const tenantManagementList = document.getElementById('tenantManagementList');
+            tenantManagementList.innerHTML = '';
+
+            onValue(tenantsRef, (snapshot) => {
+                tenantManagementList.innerHTML = '';
+                const tenants = snapshot.val();
+                if (!tenants) return;
+
+                Object.entries(tenants).forEach(([key, tenant]) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${tenant.name}</td>
+                        <td>
+                            <button class="delete-btn" onclick="deleteTenant('${key}')"><i class="fa-solid fa-trash"></i> Futa</button>
+                        </td>
+                    `;
+                    tenantManagementList.appendChild(row);
+                });
+            });
+        }
+
+        window.deleteTenant = function(key) {
+            if (confirm('Una uhakika unataka kufuta mpangaji huyu?')) {
+                remove(ref(database, `tenants/${key}`))
+                    .then(() => {
+                        alert('Mpangaji amefutwa!');
+                        displayTenantManagement();
+                    })
+                    .catch(error => {
+                        console.error('Error deleting tenant:', error);
+                    });
+            }
+        };
+
+        window.updateSystemMode = function() {
+            const newMode = document.getElementById('systemMode').value;
+            set(settingsRef, { mode: newMode })
+                .then(() => {
+                    systemMode = newMode;
+                    alert(`Mfumo umewekwa kwenye hali ya ${newMode === 'admin' ? 'Admin' : 'Mtazamaji'}!`);
+                })
+                .catch(error => {
+                    console.error('Error updating system mode:', error);
+                });
+        };
+
+        document.getElementById('announcementForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!isAdminAuthenticated) {
+                alert('Lazima uwe admin ili uchapishe tangazo!');
+                return;
+            }
+
+            const message = document.getElementById('announcementMessage').value;
+            const date = new Date();
+            const formattedDate = date.toISOString().split('T')[0];
+
+            const announcement = {
+                message: message,
+                date: formattedDate
+            };
+
+            push(announcementsRef, announcement)
+                .then(() => {
+                    this.reset();
+                    alert('Tangazo limechapishwa!');
+                })
+                .catch(error => {
+                    console.error('Error saving announcement:', error);
+                });
+        });
+
+        function displayAnnouncements() {
+            const adminAnnouncementList = document.getElementById('announcementList');
+            const mainAnnouncementList = document.getElementById('mainAnnouncementList');
+            adminAnnouncementList.innerHTML = '';
+            mainAnnouncementList.innerHTML = '';
+
+            onValue(announcementsRef, (snapshot) => {
+                adminAnnouncementList.innerHTML = '';
+                mainAnnouncementList.innerHTML = '';
+                const announcements = snapshot.val();
+                if (!announcements) return;
+
+                Object.entries(announcements).forEach(([key, announcement]) => {
+                    const announcementDiv = document.createElement('div');
+                    announcementDiv.classList.add('announcement');
+                    announcementDiv.innerHTML = `
+                        <i class="fa-solid fa-bullhorn"></i>
+                        <div class="announcement-text">${announcement.message} (${announcement.date})</div>
+                        ${isAdminAuthenticated ? `<div class="announcement-actions"><button onclick="deleteAnnouncement('${key}')"><i class="fa-solid fa-trash"></i></button></div>` : ''}
+                    `;
+                    mainAnnouncementList.appendChild(announcementDiv.cloneNode(true));
+                    if (isAdminAuthenticated) {
+                        adminAnnouncementList.appendChild(announcementDiv);
+                    }
+                });
+            });
+        }
+
+        window.deleteAnnouncement = function(key) {
+            if (!isAdminAuthenticated) {
+                alert('DAVID AMEZUA KILA MTU KUHARIRI TANGAZO .');
+                return;
+            }
+
+            if (confirm('Una uhakika unataka kufuta tangazo hili?')) {
+                remove(ref(database, `announcements/${key}`))
+                    .then(() => {
+                        alert('Tangazo limefutwa!');
+                    })
+                    .catch(error => {
+                        console.error('Error deleting announcement:', error);
+                    });
+            }
+        };
+
+        function displayPaidUnpaid() {
+            const paidList = document.getElementById('paidList');
+            const unpaidList = document.getElementById('unpaidList');
+            const paymentMessage = document.getElementById('paymentMessage');
+            paidList.innerHTML = '';
+            unpaidList.innerHTML = '';
+
+            onValue(tenantsRef, (snapshot) => {
+                const tenants = snapshot.val();
+                if (!tenants) return;
+
+                onValue(paymentsRef, (snapshot) => {
+                    const payments = snapshot.val();
+                    const tenantNames = Object.values(tenants).map(tenant => tenant.name);
+                    let paidTenants = [];
+                    let unpaidTenants = [];
+
+                    tenantNames.forEach(name => {
+                        let hasPaid = false;
+                        if (payments) {
+                            Object.values(payments).forEach(payment => {
+                                if (payment.name.toLowerCase() === name.toLowerCase() && payment.confirmed) {
+                                    const daysRemaining = calculateDaysRemaining(payment.dueDate, payment.confirmed);
+                                    if (daysRemaining > 0 || daysRemaining === "Pending Confirmation") {
+                                        hasPaid = true;
+                                    }
+                                }
+                            });
+                        }
+                        if (hasPaid) {
+                            paidTenants = paidTenants.filter(t => t !== name);
+                            paidTenants.push(name);
+                        } else {
+                            unpaidTenants = unpaidTenants.filter(t => t !== name);
+                            unpaidTenants.push(name);
+                        }
+                    });
+
+                    paidTenants.forEach(name => {
+                        const li = document.createElement('li');
+                        li.textContent = name;
+                        paidList.appendChild(li);
+                    });
+
+                    unpaidTenants.forEach(name => {
+                        const li = document.createElement('li');
+                        li.textContent = name;
+                        unpaidList.appendChild(li);
+                    });
+
+                    let message = '<h4>Ujumbe wa Malipo</h4>';
+                    message += '<p><strong>Waliotoa Hela:</strong><br>' + (paidTenants.length > 0 ? paidTenants.join('<br>') : 'Hakuna') + '</p>';
+                    message += '<p><strong>Wale Ambao Bado:</strong><br>' + (unpaidTenants.length > 0 ? unpaidTenants.join('<br>') : 'Hakuna') + '</p>';
+                    message += '<p>Kama unataka kulipa, tuma hela kwa namba <strong>0623715858</strong>.</p>';
+                    paymentMessage.innerHTML = message;
+                });
+            });
+        }
+
+        window.copyCombinedList = function() {
+            const paidList = document.getElementById('paidList');
+            const unpaidList = document.getElementById('unpaidList');
+            const paidItems = Array.from(paidList.getElementsByTagName('li')).map(item => item.textContent);
+            const unpaidItems = Array.from(unpaidList.getElementsByTagName('li')).map(item => item.textContent);
+
+            const text = `Waliotoa Hela:\n${paidItems.length > 0 ? paidItems.join('\n') : 'Hakuna'}\n\nWale Ambao Bado:\n${unpaidItems.length > 0 ? unpaidItems.join('\n') : 'Hakuna'}\n\nKama unataka kulipa, tuma hela kwa namba 0623715858.`;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Majina na ujumbe vimekopiwa!');
+            });
+        };
+
+        function calculateDebts() {
+            const debtList = document.getElementById('debtList');
+    debtList.innerHTML = '';
+
+    onValue(tenantsRef, (snapshot) => {
+        const tenants = snapshot.val();
+        if (!tenants) {
+            debtList.innerHTML = '<tr><td colspan="3">Hakuna wapangaji waliyosajiliwa.</td></tr>';
+            return;
+        }
+
+        onValue(paymentsRef, (snapshot) => {
+            const payments = snapshot.val();
+            const tenantNames = Object.values(tenants).map(tenant => tenant.name);
+
+            tenantNames.forEach(name => {
+                let lastDueDate = null;
+                let hasActivePayment = false;
+
+                if (payments) {
+                    const tenantPayments = Object.values(payments).filter(payment => 
+                        payment.name.toLowerCase() === name.toLowerCase() && payment.confirmed);
+                    tenantPayments.forEach(payment => {
+                        const dueDate = new Date(payment.dueDate);
+                        if (!lastDueDate || dueDate > lastDueDate) {
+                            lastDueDate = dueDate;
+                        }
+                        const daysRemaining = calculateDaysRemaining(payment.dueDate, payment.confirmed);
+                        if (daysRemaining > 0) {
+                            hasActivePayment = true;
+                        }
+                    });
+                }
+
+                const today = new Date();
+                let daysOverdue = 0;
+                let debt = 0;
+
+                if (lastDueDate && lastDueDate < today && !hasActivePayment) {
+                    daysOverdue = Math.ceil((today - lastDueDate) / (1000 * 60 * 60 * 24));
+                    if (daysOverdue <= 7) {
+                        debt = 1000;
+                    } else if (daysOverdue <= 14) {
+                        debt = 2000;
+                    } else if (daysOverdue <= 21) {
+                        debt = 3000;
+                    } else if (daysOverdue <= 29) {
+                        debt = 4000;
+                    } else {
+                        debt = 4000;
+                        set(ref(database, `cutOffList/${name}`), {
+                            name: name,
+                            debt: debt,
+                            daysOverdue: daysOverdue,
+                            lastUpdate: today.toISOString().split('T')[0]
+                        });
+                        const sms = {
+                            sender: "MALOSHA PAY",
+                            message: `Mpendwa ${name}, umefikisha siku ${daysOverdue} bila kulipa deni la ${debt.toLocaleString()} TZS. Umeme wako utakatwa hivi karibuni. Tafadhali lipia haraka!`,
+                            date: today.toISOString().split('T')[0],
+                            month: today.toLocaleString('default', { month: 'long' })
+                        };
+                        push(smsRef, sms);
+                    }
+
+                    set(ref(database, `debts/${name}`), {
+                        amount: debt,
+                        daysOverdue: daysOverdue,
+                        lastUpdate: today.toISOString().split('T')[0]
+                    });
+                } else if (!lastDueDate && !hasActivePayment) {
+                    daysOverdue = 1;
+                    debt = 1000;
+                    set(ref(database, `debts/${name}`), {
+                        amount: debt,
+                        daysOverdue: daysOverdue,
+                        lastUpdate: today.toISOString().split('T')[0]
+                    });
+                }
+
+                if (debt > 0) {
+                    const row = document.createElement('tr');
+                    if (daysOverdue >= 30) {
+                        row.classList.add('overdue-row');
+                    }
+                    row.innerHTML = `
+                        <td>${name}</td>
+                        <td>${debt.toLocaleString()} TZS</td>
+                        <td><span class="${daysOverdue >= 30 ? 'overdue' : daysOverdue > 2 ? 'days-normal' : 'days-warning'}">${daysOverdue} Siku</span></td>
+                    `;
+                    debtList.appendChild(row);
+                }
+            });
+        });
+    });
+}
+
+function displayCutOffList() {
+    const cutOffList = document.getElementById('cutOffList');
+    cutOffList.innerHTML = '';
+
+    onValue(cutOffRef, (snapshot) => {
+        cutOffList.innerHTML = '';
+        const cutOffData = snapshot.val();
+        if (!cutOffData) {
+            cutOffList.innerHTML = '<tr><td colspan="3">Hakuna wapangaji WALIO KARIBU KUKATIWA UMEME  kwa sasa.</td></tr>';
+            return;
+        }
+
+        Object.values(cutOffData).forEach(data => {
+            const row = document.createElement('tr');
+            row.classList.add('overdue-row');
+            row.innerHTML = `
+                <td>${data.name}</td>
+                <td>${data.debt.toLocaleString()} TZS</td>
+                <td><span class="overdue">${data.daysOverdue} Siku</span></td>
+            `;
+            cutOffList.appendChild(row);
+        });
+    });
+}
+
+function displayTenantsList() {
+    const tenantsList = document.getElementById('tenantsList');
+    tenantsList.innerHTML = '';
+
+    onValue(tenantsRef, (snapshot) => {
+        tenantsList.innerHTML = '';
+        const tenants = snapshot.val();
+        if (!tenants) {
+            tenantsList.innerHTML = '<tr><td colspan="3">Hakuna wapangaji waliyosajiliwa.</td></tr>';
+            return;
+        }
+
+        Object.values(tenants).forEach(tenant => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${tenant.name}</td>
+                <td>${tenant.roomNumber}</td>
+                <td>${tenant.phoneNumber || 'Hakuna'}</td>
+            `;
+            tenantsList.appendChild(row);
+        });
+    });
+}
+
+function createMovingObjects() {
+    const container = document.getElementById('movingObjectsContainer');
+    const objectCount = 10;
+    const objects = [
+        'https://img.icons8.com/ios-filled/50/ffffff/lightning-bolt.png',
+        'https://img.icons8.com/ios-filled/50/ffffff/electricity.png',
+        'https://img.icons8.com/ios-filled/50/ffffff/bulb.png'
+    ];
+
+    for (let i = 0; i < objectCount; i++) {
+        const object = document.createElement('div');
+        object.classList.add('moving-object');
+        object.style.backgroundImage = `url(${objects[Math.floor(Math.random() * objects.length)]})`;
+        object.style.left = `${Math.random() * 100}vw`;
+        object.style.animationDuration = `${Math.random() * 5 + 5}s`;
+        object.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(object);
+    }
+}
+
+// Initialize all functions on page load
+document.addEventListener('DOMContentLoaded', () => {
+    calculateDebts();
+    displayCutOffList();
+    displayTenantsList();
+    displayPayments();
+    displayHomePayments();
+    displaySMS();
+    updateDashboard();
+    populateTenantDropdown();
+    displayAnnouncements();
+});
+</script>
+</body>
+</html>
+
